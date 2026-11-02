@@ -1,0 +1,36 @@
+openapi: 3.0.3
+info: { title: PulsePay API, version: v1 }
+servers: [{ url: /api/v1 }]
+paths:
+  /auth/register: { post: { summary: Register a merchant account } }
+  /auth/login: { post: { summary: Obtain access and refresh tokens } }
+  /payment-intents: { get: { summary: List merchant payment intents }, post: { summary: Create an idempotent payment intent } }
+  /payment-intents/{id}/confirm: { post: { summary: Confirm a payment intent } }
+  /payment-intents/{id}/cancel: { post: { summary: Cancel an unprocessed payment intent } }
+  /payment-intents/{id}/capture: { post: { summary: Capture an authorized payment } }
+  /payment-intents/{id}/details: { get: { summary: Inspect payment, authorization, captures, refunds, ledger entries, and timeline } }
+  /payment-intents/{id}/cancel-authorization: { post: { summary: Cancel an uncaptured authorization } }
+  /refunds: { get: { summary: List refunds }, post: { summary: Create a partial or full refund } }
+  /refunds/{id}: { get: { summary: Retrieve a refund } }
+  /customers: { get: { summary: List customers }, post: { summary: Create a customer } }
+  /customers/{id}: { get: { summary: Retrieve a customer }, patch: { summary: Update a customer } }
+  /customers/{id}/payments: { get: { summary: List customer payment history } }
+  /customers/{id}/refunds: { get: { summary: List customer refund history } }
+  /payment-methods: { get: { summary: List safe simulated payment-method references }, post: { summary: Create a simulated payment-method reference } }
+  /ledger: { get: { summary: List immutable journal entries } }
+  /ledger/journals/{reference}/reverse: { post: { summary: Create a compensating reversal journal } }
+  /dashboard/overview: { get: { summary: Merchant financial aggregates with optional date range } }
+  /dashboard/trends: { get: { summary: Daily payment trend data } }
+  /dashboard/status-distribution: { get: { summary: Payment status distribution } }
+  /api-keys: { get: { summary: List API keys }, post: { summary: Create a test API key } }
+  /api-keys/{id}/revoke: { post: { summary: Revoke an API key } }
+  /api-keys/{id}/rotate: { post: { summary: Rotate an API key and return its replacement secret once } }
+  /webhooks: { get: { summary: List webhook endpoints }, post: { summary: Register a webhook endpoint } }
+  /webhooks/{id}: { patch: { summary: Update or disable a webhook endpoint } }
+  /webhooks/{id}/rotate-secret: { post: { summary: Rotate a webhook signing secret } }
+  /webhook-events: { get: { summary: List merchant event logs for webhook troubleshooting } }
+  /merchant/profile: { get: { summary: Get merchant profile }, patch: { summary: Update merchant profile } }
+components:
+  securitySchemes:
+    bearerAuth: { type: http, scheme: bearer, bearerFormat: JWT }
+    apiKeyAuth: { type: apiKey, in: header, name: X-Api-Key }

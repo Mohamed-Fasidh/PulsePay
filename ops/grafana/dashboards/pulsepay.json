@@ -1,0 +1,21 @@
+{
+  "annotations": { "list": [] },
+  "editable": true,
+  "schemaVersion": 39,
+  "title": "PulsePay Operations",
+  "version": 2,
+  "time": { "from": "now-6h", "to": "now" },
+  "panels": [
+    { "id": 1, "type": "timeseries", "title": "API request rate", "targets": [{ "expr": "sum(rate(http_server_requests_seconds_count{application=\"pulsepay-api\"}[5m]))", "legendFormat": "requests/s" }] },
+    { "id": 2, "type": "timeseries", "title": "API request latency (p95)", "targets": [{ "expr": "histogram_quantile(0.95, sum(rate(http_server_requests_seconds_bucket{application=\"pulsepay-api\"}[5m])) by (le))", "legendFormat": "p95 seconds" }] },
+    { "id": 3, "type": "timeseries", "title": "HTTP error rate", "targets": [{ "expr": "sum(rate(http_server_requests_seconds_count{application=\"pulsepay-api\",status=~\"5..\"}[5m]))", "legendFormat": "5xx/s" }, { "expr": "sum(rate(http_server_requests_seconds_count{application=\"pulsepay-api\",status=~\"4..\"}[5m]))", "legendFormat": "4xx/s" }] },
+    { "id": 4, "type": "timeseries", "title": "Kafka consumer lag", "targets": [{ "expr": "sum(kafka_consumer_fetch_manager_records_lag_max)", "legendFormat": "records" }] },
+    { "id": 5, "type": "timeseries", "title": "JVM process uptime", "targets": [{ "expr": "process_uptime_seconds{application=\"pulsepay-api\"}", "legendFormat": "uptime" }] },
+    { "id": 6, "type": "stat", "title": "JVM heap used", "targets": [{ "expr": "sum(jvm_memory_used_bytes{application=\"pulsepay-api\",area=\"heap\"})", "legendFormat": "bytes" }] },
+    { "id": 7, "type": "timeseries", "title": "Payment outcomes", "targets": [{ "expr": "sum(rate(pulsepay_payment_outcomes_total[5m])) by (outcome)", "legendFormat": "{{outcome}}/s" }] },
+    { "id": 8, "type": "timeseries", "title": "Refund outcomes", "targets": [{ "expr": "sum(rate(pulsepay_refund_outcomes_total[5m])) by (outcome)", "legendFormat": "{{outcome}}/s" }] },
+    { "id": 9, "type": "timeseries", "title": "Outbox and webhook backlog", "targets": [{ "expr": "pulsepay_outbox_pending", "legendFormat": "outbox pending" }, { "expr": "pulsepay_webhook_pending", "legendFormat": "webhooks pending" }, { "expr": "pulsepay_webhook_dead_lettered", "legendFormat": "webhooks dead-lettered" }] },
+    { "id": 10, "type": "timeseries", "title": "Webhook delivery latency (average)", "targets": [{ "expr": "pulsepay_webhook_delivery_latency", "legendFormat": "seconds" }] },
+    { "id": 11, "type": "text", "title": "Financial and delivery signals", "options": { "mode": "markdown", "content": "Metrics are aggregate-only: no merchant IDs, payment IDs, API keys, URLs, or payment metadata are exported. Detailed, merchant-scoped records remain available through the dashboard and delivery-history APIs." } }
+  ]
+}
